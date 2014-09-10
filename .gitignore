@@ -1,0 +1,15 @@
+quotefile
+quotefile.log
+arttipfile
+
+tellfile
+tellfile.yaml
+
+tagfile
+tagfile.yaml
+
+config.yaml
+
+# Ignore vim files
+*.swp
+*~
