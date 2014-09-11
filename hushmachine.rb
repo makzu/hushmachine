@@ -6,7 +6,7 @@ require 'cinch/plugins/basic_ctcp'
 
 require 'yaml'
 
-%w{reconnect convenience bored drawalong help quotes tags fzoo subchecker tell stats hug shush arttip linkreader flirt}.each do |plugin|
+%w{reconnect convenience bored drawalong help quotes tags fzoo subchecker tell hug shush arttip linkreader flirt}.each do |plugin|
   require "plugins/#{plugin}"
 end
 
@@ -37,7 +37,6 @@ bot = Cinch::Bot.new do
                           Quotes,
                           Reconnect,
                           Shush,
-                          Stats,
                           SubChecker,
                           Tags,
                           Tell
