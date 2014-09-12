@@ -18,19 +18,10 @@ class Reconnect
     # Need to make this more flexible
     unless @bot.nick == @bot.config.nicks.first
       User("Nickserv").send("ghost hushmachine")
+      sleep( 3 )
       @bot.nick = @bot.config.nicks.first
+      sleep( 3 )
       Channel("#reddit-mlpds").send "Nobody saw that, right?"
-    end
-
-    return
-
-    #fzoo?
-    @bot.config.nicks.each do |nickname|
-      @bot.nick = nickname
-
-      sleep(5)
-
-      return if @bot.nick == nickname
     end
   end
 
