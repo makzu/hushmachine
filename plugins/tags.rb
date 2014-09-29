@@ -62,8 +62,8 @@ class Tags
     end
 
     @tags[u] = { 'name' => subject, 'tags' => [] } if @tags[u].nil?
-    @tags[u]['tags'] << tag
-    @tags[u]['tags'].sort!.uniq!
+    @tags[u]['tags'] << tag.force_encoding("UTF-8")
+    @tags[u]['tags'].sort_by!(&:downcase).uniq!
     m.reply "Added #{tag} for #{Format(:blue, @tags[u]['name'])}."
     save_tags
   end

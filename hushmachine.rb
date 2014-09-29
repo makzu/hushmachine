@@ -12,7 +12,7 @@ end
 
 bot = Cinch::Bot.new do
   configure do |c|
-    settings = YAML.load_file('config.yaml') || {}
+    settings = YAML.load_file('config.yaml') || {:plugins => {}}
 
     # Eventually all (or at least most) settings will be in the file rather
     # than being specified here
