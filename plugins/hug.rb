@@ -123,7 +123,8 @@ class Hug
         "leaves a \"kick me\" sign on %s's back after a brief hug.",
         "hugs %s, then secretly writes \"deodorant\" on their shopping list.",
         "hugs %s, tickling them with his mecha-neckbeard.",
-        "misinterprets the command as !bug and spends the next ten minutes trying to annoy %s."
+        "misinterprets the command as !bug and spends the next ten minutes trying to annoy %s.",
+        "hugs %s like a dollar store hooker would."
       ]
 
     info "!hug initialized with #{ @yay_hugs.length } good hugs, #{ @meh_hugs.length } meh hugs, and #{ @bad_hugs.length } bad hugs."
