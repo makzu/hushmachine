@@ -10,6 +10,9 @@ tagfile.yaml
 
 config.yaml
 
+log/*.log
+log
+
 # Ignore vim files
 *.swp
 *~
