@@ -1,5 +1,5 @@
 require 'cinch'
-require 'json'
+require 'yaml'
 
 class Tags
   include Cinch::Plugin
@@ -28,29 +28,27 @@ class Tags
 
   def initialize(*args)
     super
-    @tags = {}
     load_tags
-    @banlist = config[:banlist]
     @allowed_channels = config[:allowed_channels]
-    info "!tags initialized with tags for #{@tags.length} subjects"
+    info "!tags initialized with tags for #{@data[:taglist].length} subjects"
   end
 
   def alltags(m)
-    if @tags == {}
+    if @data[:taglist].empty?
       m.reply "I have no tags :("
     else
       m.reply "Check your PMs, #{m.user.to_s}" if m.channel?
-      m.user.msg "I have tags for: " + Format(:blue, @tags.keys.collect { |t| @tags[t]['name'] }.sort { |a, b| a.downcase <=> b.downcase }.join(", "))
+      m.user.msg "I have tags for: " + Format(:blue, @data[:taglist].keys.collect { |t| @data[:taglist][t][:name] }.sort { |a, b| a.downcase <=> b.downcase }.join(", "))
     end
   end
 
   def addtag(m, subject, tag)
-    if @banlist.include?(m.user.user.downcase)
+    if @data[:blacklist].include?(m.user.user.downcase)
       m.reply "You're not allowed to do that."
       return
     end
-    unless m.channel? and @allowed_channels.include? m.channel.to_s
-      m.reply "Modifying tags outside the main channel is disabled."
+    unless can_edit?(m)
+      m.reply "Modifying tags outside the main channel is disabled. Ask Hush if you want to be added to the whitelist."
       return
     end
 
@@ -61,58 +59,58 @@ class Tags
       return
     end
 
-    @tags[u] = { 'name' => subject, 'tags' => [] } if @tags[u].nil?
-    @tags[u]['tags'] << tag.force_encoding("UTF-8")
-    @tags[u]['tags'].sort_by!(&:downcase).uniq!
-    m.reply "Added #{tag} for #{Format(:blue, @tags[u]['name'])}."
+    @data[:taglist][u] = { name: subject, tags: [] } if @data[:taglist][u].nil?
+    @data[:taglist][u][:tags] << tag.force_encoding("UTF-8")
+    @data[:taglist][u][:tags].sort_by!(&:downcase).uniq!
+    m.reply "Added #{tag} for #{Format(:blue, @data[:taglist][u][:name])}."
     save_tags
   end
 
   def deltag(m, subject, tag)
-    if @banlist.include?(m.user.user.downcase)
+    if @data[:blacklist].include?(m.user.user.downcase)
       m.reply "You're not allowed to do that."
       return
     end
-    unless m.channel? and @allowed_channels.include? m.channel.to_s
-      m.reply "Modifying tags outside the main channel is disabled."
+    unless can_edit?(m)
+      m.reply "Modifying tags outside the main channel is disabled. Ask Hush if you want to be added to the whitelist."
       return
     end
 
     u = subject.downcase
 
-    if @tags[u].nil?
+    if @data[:taglist][u].nil?
       m.reply "No tags for #{Format(:blue, subject)}."
-    elsif @tags[u]['tags'].include? tag
-      name = @tags[u]['name']
+    elsif @data[:taglist][u][:tags].include? tag
+      name = @data[:taglist][u][:name]
 
-      @tags[u]['tags'].reject! { |x| x == tag }
-      @tags.delete u if @tags[u]['tags'].empty?
+      @data[:taglist][u][:tags].reject! { |x| x == tag }
+      @data.delete u if @data[:taglist][u][:tags].empty?
 
       m.reply "Removed #{tag} from #{Format(:blue, name)}."
       save_tags
     else
-      m.reply "#{Format(:blue, @tags[u]['name'])} doesn't have that tag."
+      m.reply "#{Format(:blue, @data[:taglist][u][:name])} doesn't have that tag."
     end
   end
 
   def cleartag(m, subject)
-    if @banlist.include?(m.user.user.downcase)
+    if @data[:blacklist].include?(m.user.user.downcase)
       m.reply "You're not allowed to do that."
       return
     end
-    unless m.channel? and @allowed_channels.include? m.channel.to_s
-      m.reply "Modifying tags outside the main channel is disabled."
+    unless can_edit(m)
+      m.reply "Modifying tags outside the main channel is disabled. Ask Hush if you want to be added to the whitelist."
       return
     end
 
     u = subject.downcase
 
-    if @tags[u].nil?
+    if @data[:taglist][u].nil?
       m.reply "No tags for #{Format(:blue, subject)}."
     else
-      name = @tags[u]['name']
+      name = @data[:taglist][u][:name]
 
-      @tags.delete u
+      @data[:taglist].delete u
 
       m.reply "Removed all tags from #{Format(:blue, name)}."
       save_tags
@@ -128,10 +126,10 @@ class Tags
       s = m.user.to_s
     end
 
-    if @tags[u].nil?
+    if @data[:taglist][u].nil?
       m.reply "No tags for #{Format(:blue, s)}."
     else
-      m.reply "Tags for #{Format(:blue, @tags[u]['name'])}: #{@tags[u]['tags'].join(' ')}"
+      m.reply "Tags for #{Format(:blue, @data[:taglist][u][:name])}: #{@data[:taglist][u][:tags].join(' ')}"
     end
   end
 
@@ -154,12 +152,15 @@ class Tags
 
   private
   def load_tags
-    @tags = JSON.parse File.read('tagfile') rescue {}
+    @data = YAML.load_file('tagfile.yaml') rescue {whitelist: [], blacklist: [], aliases: {}, allowed_channels: ['#reddit-mlpds'], taglist: {}}
   end
 
   def save_tags
-    @tags = Hash[@tags.sort]
+    File.open("tagfile", "w") { |f| f.write @data.to_yaml }
+  end
 
-    File.open("tagfile", "w") { |f| f.write JSON.pretty_generate @tags }
+  def can_edit?(m)
+    return true if m.user.authname and @data[:whitelist].include? m.user.authname.downcase
+    m.channel? and @data[:allowed_channels].include? m.channel
   end
 end
