@@ -9,7 +9,7 @@ class Tags
              "\cB!mytags\cB / \cB!me\cB - get your own tags\n"\
              "\cB!tag <add/del> <subject> <tag>\cB / \cB!addtag <subject> <tag>\cB / \cB!deltag <subject> <tag>\cB = add or remove <tag> for <subject>"
 
-  match /tags? (?!add|del)(.+)/i, method: :tags
+  match /tags? (?!add|del|alias[add|del|remove|for|list]|listalias)(.+)/i, method: :tags
   match /(\S+)/, prefix: "?", method: :tags
   match /(all)?tags?$/i, method: :alltags
 
@@ -21,6 +21,16 @@ class Tags
 
   match /tags? clear (\S+)/i, method: :cleartag
   match /cleartags? (\S+)/i, method: :cleartag
+
+  match /tags? (?:aliasadd|addalias) (\S+) (\S+)/i, method: :addalias
+  match /addtagalias (\S+) (\S+)/i, method: :addalias
+
+  match /tags? aliasdel (\S+)/i, method: :delalias
+  match /(?:del|delete|remove)tagalias (\S+)/i, method: :delalias
+
+  match /tags? (?:aliaslist|listalias)$/i, method: :allaliases
+
+  match /tags? aliasfor (\S+)/i, method: :aliasfor
 
   match /(\S+)/, method: :maybe_tags
 
@@ -61,7 +71,6 @@ class Tags
 
     @data[:taglist][u] = { name: subject, tags: [] } if @data[:taglist][u].nil?
     @data[:taglist][u][:tags] << tag.force_encoding("UTF-8")
-    @data[:taglist][u][:tags].sort_by!(&:downcase).uniq!
     m.reply "Added #{tag} for #{Format(:blue, @data[:taglist][u][:name])}."
     save_tags
   end
@@ -98,7 +107,7 @@ class Tags
       m.reply "You're not allowed to do that."
       return
     end
-    unless can_edit(m)
+    unless can_edit?(m)
       m.reply "Modifying tags outside the main channel is disabled. Ask Hush if you want to be added to the whitelist."
       return
     end
@@ -121,6 +130,11 @@ class Tags
     s = subject
     u = s.downcase
 
+    if @data[:aliases].include? u
+      s = @data[:aliases][u]
+      u = s.downcase
+    end
+
     if %w{me myself mytags}.include? u
       u = m.user.to_s.downcase
       s = m.user.to_s
@@ -131,6 +145,41 @@ class Tags
     else
       m.reply "Tags for #{Format(:blue, @data[:taglist][u][:name])}: #{@data[:taglist][u][:tags].join(' ')}"
     end
+  end
+
+  def addalias(m, name, target)
+    if @data[:blacklist].include?(m.user.user.downcase)
+      m.reply "You're not allowed to do that."
+      return
+    end
+    unless can_edit?(m)
+      m.reply "Modifying tags outside the main channel is disabled. Ask Hush if you want to be added to the whitelist."
+      return
+    end
+    if @data[:taglist][target.downcase].nil?
+      m.reply "#{Format(:blue, target)} is not a valid tag!"
+    elsif ! @data[:taglist][name.downcase].nil?
+      m.reply "#{Format(:blue, name)} is already a tag itself!"
+    else
+      @data[:aliases][name.downcase] = target.downcase
+      m.reply "Added #{Format(:blue, name)} as an alias for #{ Format(:blue, @data[:taglist][target.downcase][:name]) }."
+      save_tags
+    end
+  end
+
+  def delalias(m, name)
+    if @data[:blacklist].include?(m.user.user.downcase)
+      m.reply "You're not allowed to do that."
+      return
+    end
+    unless can_edit?(m)
+      m.reply "Modifying tags outside the main channel is disabled. Ask Hush if you want to be added to the whitelist."
+      return
+    end
+
+    @data[:aliases].delete name.downcase
+    m.reply "Removed alias #{Format(:blue, name)}."
+    save_tags
   end
 
   def maybe_tags(m, subject)
@@ -156,11 +205,28 @@ class Tags
   end
 
   def save_tags
-    File.open("tagfile", "w") { |f| f.write @data.to_yaml }
+    sort_tags
+    File.open("tagfile.yaml", "w") { |f| f.write @data.to_yaml }
   end
 
   def can_edit?(m)
     return true if m.user.authname and @data[:whitelist].include? m.user.authname.downcase
     m.channel? and @data[:allowed_channels].include? m.channel
+  end
+
+  def sort_tags
+    @data[:whitelist].sort!.uniq!
+    @data[:blacklist].sort!.uniq!
+
+    @data[:aliases] = @data[:aliases].sort_by(&:last).to_h
+
+    nh = {}
+    @data[:taglist].keys.sort.each do |t|
+      nh[t] = {}
+      nh[t][:name] = @data[:taglist][t][:name]
+      nh[t][:tags] = @data[:taglist][t][:tags].sort_by(&:downcase)
+    end
+    @data[:taglist] = nh
+
   end
 end

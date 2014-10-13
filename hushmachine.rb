@@ -1,5 +1,7 @@
 $:.unshift(Dir.pwd)
 
+# Look at https://github.com/dominikh/Mathetes/blob/cinch_rewrite/bot.rb for some ideas
+
 require 'cinch'
 require 'cinch/plugins/identify'
 require 'cinch/plugins/basic_ctcp'
