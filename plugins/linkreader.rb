@@ -88,7 +88,7 @@ class LinkReader
       when 2
         "#{ary[0]} and #{ary[1]}"
       else
-        "#{ary[0..-2].join(", ")} and #{ary[-1]}"
+        "#{ary[0..-2].join(", ")}, and #{ary[-1]}"
     end
   end
 end
