@@ -130,14 +130,14 @@ class Tags
     s = subject
     u = s.downcase
 
-    if @data[:aliases].include? u
-      s = @data[:aliases][u]
+    if %w{me myself mytags}.include? u
+      s = m.user.to_s
       u = s.downcase
     end
 
-    if %w{me myself mytags}.include? u
-      u = m.user.to_s.downcase
-      s = m.user.to_s
+    if @data[:aliases].include? u
+      s = @data[:aliases][u]
+      u = s.downcase
     end
 
     if @data[:taglist][u].nil?
@@ -180,6 +180,18 @@ class Tags
     @data[:aliases].delete name.downcase
     m.reply "Removed alias #{Format(:blue, name)}."
     save_tags
+  end
+
+  def aliaslist(m)
+  end
+
+  def aliasfor(m, name)
+    t = @data[:aliases].select{ |k, v| v.downcase == name.downcase }.keys
+    if t.length == 0
+      m.reply "There are no aliases for #{Format(:blue, name)}."
+    else
+      m.reply "Aliases for #{Format(:blue, name)}: #{array_to_sentence(t)}"
+    end
   end
 
   def maybe_tags(m, subject)
@@ -228,5 +240,18 @@ class Tags
     end
     @data[:taglist] = nh
 
+  end
+
+  def array_to_sentence(ary)
+    case ary.length
+      when 0
+        ""
+      when 1
+        ary[0].to_s.dup
+      when 2
+        "#{ary[0]} and #{ary[1]}"
+      else
+        "#{ary[0..-2].join(", ")}, and #{ary[-1]}"
+    end
   end
 end
