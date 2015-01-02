@@ -3,29 +3,10 @@ require 'cinch'
 class Convenience
   include Cinch::Plugin
 
-  match /toggledevoice/, method: :toggle_devoice
   match /reloadplugin (.+)/, method: :reload_plugin
-  listen_to :voice, method: :on_voice
 
   def initialize(*args)
     super
-    @do_devoice = true
-  end
-
-  def toggle_devoice(m)
-    if m.user.to_s == "hushnowquietnow"
-      if @do_devoice
-        @do_devoice = false
-      else
-        @do_devoice = true
-      end
-    end
-  end
-
-  def on_voice(m, user)
-    if user.to_s == "hushnowquietnow" and @do_devoice
-      User("Chanserv").send("devoice #reddit-mlpds hushnowquietnow")
-    end
   end
 
   def reload_plugin(m, plugin)
