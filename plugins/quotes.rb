@@ -77,7 +77,11 @@ class Quotes
 
     quotes = File.readlines("quotefile")
     unless arg.nil?
-      quotes.select! { |q| q.downcase.match /#{arg.downcase}/ }
+      if arg.match /^\/.*\/$/ # arg is /blah/
+        quotes.select! { |q| q.downcase.match /#{arg.split("/")[1]}/ }
+      else
+        quote.select! { |q| q.downcase.include? arg.downcase }
+      end
       suffix = " that include #{arg}"
     end
     if quotes.length == 1
@@ -112,7 +116,13 @@ class Quotes
         return quotes[index - 1] # file starts at #0 remember
       end
     else
-      quotes.select! { |q| q.downcase.match /#{arg.strip.downcase}/ }
+      puts arg.strip.downcase.inspect
+      if arg.match /^\/.*\/$/
+        puts "ok so it matched"
+        quotes.select! { |q| q.downcase.match /#{arg.split("/")[1]}/ }
+      else
+        quotes.select! { |q| q.downcase.include? arg.strip.downcase }
+      end
       if quotes.count == 0
         return "No quotes found with #{arg}."
       else
