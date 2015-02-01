@@ -8,7 +8,7 @@ require 'cinch/plugins/basic_ctcp'
 
 require 'yaml'
 
-%w{reconnect convenience bored drawalong help quotes tags fzoo subchecker tell hug shush arttip linkreader flirt commandlogger}.each do |plugin|
+%w{reconnect convenience bored drawalong help quotes tags fzoo subchecker tell hug shush arttip linkreader flirt commandlogger poll}.each do |plugin|
   require "plugins/#{plugin}"
 end
 
@@ -20,7 +20,7 @@ bot = Cinch::Bot.new do
     # than being specified here
     c.server = "irc.freenode.net"
     c.channels = ["#reddit-mlpds", "#reddit-mlpds-spoilers", "#reddit-mlpds-bots"]
-    c.nicks = ["hushmachine", "FineLineFan", "hushmachinemk2", "hushrobot"]
+    c.nicks = ["hushmachine", "FineLineFan", "MLPDSmachine"]
     c.realname = "mk2"
     c.user = "mk2"
     c.plugins.plugins = [
@@ -42,7 +42,8 @@ bot = Cinch::Bot.new do
                           Shush,
                           SubChecker,
                           Tags,
-                          Tell
+                          Tell,
+                          Poll
                         ]
 
     settings[:plugins].each do |plugin, options|
