@@ -52,7 +52,8 @@ class Convenience
       m.reply "NameError: #{plugin} not found on reload."
       return
     rescue Exception
-      m.reply "No matching class found for #{plugin} to reload"
+      m.reply "Generic Exception: Something bad happened! [](/derpypanic)"
+      return
     end
 
     @bot.plugins.register_plugin(plugin_class)

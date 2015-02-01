@@ -88,6 +88,7 @@ class Hug
         "gives %s a big beer hug!",
         "gives a quick hug and then runs off before %s knows what hit them.",
         "asks %s to hold very still while he calibrates the orbital hug cannons...",
+        "is all out of interesting ways to hug %s, so he does it in a boring way instead.",
         "'s hug servos are on the fritz and lock up while still holding onto %s!  Better get the jaws of life..."
       ]
 

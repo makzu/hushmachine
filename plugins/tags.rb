@@ -222,8 +222,15 @@ class Tags
   end
 
   def can_edit?(m)
-    return true if m.user.authname and @data[:whitelist].include? m.user.authname.downcase
-    m.channel? and @data[:allowed_channels].include? m.channel
+    #return true if m.channel? && @data[:allowed_channels].include? m.channel
+    if m.channel? and @data[:allowed_channels].include? m.channel
+      true
+    elsif m.user.authname and @data[:whitelist].include? m.user.authname.downcase
+      true
+    else
+      false
+    end
+    #return true if m.user.authname && @data[:whitelist].include? m.user.authname.downcase
   end
 
   def sort_tags
