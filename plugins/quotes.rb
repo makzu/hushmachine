@@ -80,7 +80,7 @@ class Quotes
       if arg.match /^\/.*\/$/ # arg is /blah/
         quotes.select! { |q| q.downcase.match /#{arg.split("/")[1]}/ }
       else
-        quote.select! { |q| q.downcase.include? arg.downcase }
+        quotes.select! { |q| q.downcase.include? arg.downcase }
       end
       suffix = " that include #{arg}"
     end

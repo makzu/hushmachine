@@ -89,6 +89,8 @@ class Hug
         "gives a quick hug and then runs off before %s knows what hit them.",
         "asks %s to hold very still while he calibrates the orbital hug cannons...",
         "is all out of interesting ways to hug %s, so he does it in a boring way instead.",
+        "attaches a few extra sets of arms and octo-hugs %s.",
+        "squeezes %s like a mechanical boa constrictor.",
         "'s hug servos are on the fritz and lock up while still holding onto %s!  Better get the jaws of life..."
       ]
 
@@ -125,7 +127,8 @@ class Hug
         "hugs %s, then secretly writes \"deodorant\" on their shopping list.",
         "hugs %s, tickling them with his mecha-neckbeard.",
         "misinterprets the command as !bug and spends the next ten minutes trying to annoy %s.",
-        "hugs %s like a dollar store hooker would."
+        "hugs %s like a dollar store hooker would.",
+        "bursts from teh ground beneath %s's feet, Big O style, for a surprise hug."
       ]
 
     info "!hug initialized with #{ @yay_hugs.length } good hugs, #{ @meh_hugs.length } meh hugs, and #{ @bad_hugs.length } bad hugs."
