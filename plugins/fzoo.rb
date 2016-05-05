@@ -81,9 +81,8 @@ class Fzoo
   def hooves(m, o)
     if m.user.to_s.downcase.start_with? "gren"
       m.reply "Your hooves are my favorite, Gren. :D"
-    else
-      m.reply "h#{o}ves <3"
     end
+    m.reply "h#{o}ves <3"
   end
 
   def trace(m)
@@ -92,7 +91,7 @@ class Fzoo
   end
 
   def steamer(m)
-    m.reply "You don't REALLY want that, do you?"
+    m.reply "You don't REALLY want that, do you? [](/ppreally)"
   end
 
   def disapprove(m)

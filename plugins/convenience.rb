@@ -50,9 +50,11 @@ class Convenience
       plugin_class = Cinch::Plugins.const_get(plugin)
     rescue NameError
       m.reply "NameError: #{plugin} not found on reload."
+      error Exception.to_s
       return
     rescue Exception
       m.reply "Generic Exception: Something bad happened! [](/derpypanic)"
+      error Exception.to_s
       return
     end
 

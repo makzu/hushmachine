@@ -25,8 +25,8 @@ class LinkReader
       debug "Got a URI: #{uri}"
       if uri.include? "fav.me" or uri.match /deviantart\.com\/.+/
         response << da_response(uri)
-      elsif VideoInfo.usable?(uri)
-        response << video_response(uri)
+      #elsif VideoInfo.usable?(uri)
+      #  response << video_response(uri)
       end
     end
 
