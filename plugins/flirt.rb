@@ -12,7 +12,7 @@ class Flirt
   def initialize(*args)
     super
     info "Flirt plugin initialized, you sexy man you"
-	end
+  end
 
   def on_channel(m)
     return if shushed?

@@ -32,5 +32,4 @@ class Reconnect
       m.reply "Okay."
     end
   end
-
 end

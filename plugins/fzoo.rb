@@ -142,4 +142,3 @@ class Fzoo
     return newtext.join
   end
 end
-

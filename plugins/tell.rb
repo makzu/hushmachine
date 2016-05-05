@@ -80,17 +80,17 @@ class Tell
   def string_ago(time)
     translator = HumanDate::DateTranslator.new
 
-    timeb = DateTime.parse(time)
+    before = DateTime.parse(time)
     now = DateTime.now
 
-    if (now.to_time - timeb.to_time) >= 150000
+    if (now.to_time - before.to_time) >= 150000
       translator.parts = [:year, :month, :day]
-		elsif (now.to_time - timeb.to_time) <= 60
+    elsif (now.to_time - before.to_time) <= 60
       translator.parts = [:year, :month, :day, :hour, :minute, :second]
     else
       translator.parts = [:year, :month, :day, :hour, :minute]
     end
 
-    translator.translate(now, timeb)
+    translator.translate(now, before)
   end
 end

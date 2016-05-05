@@ -82,9 +82,9 @@ class Drawalong
   end
 
   def join(m)
-		if expired? or not @pending
-			m.reply "A drawalong hasn't started yet!"
-		elsif @participants.include? m.user
+    if expired? or not @pending
+      m.reply "A drawalong hasn't started yet!"
+    elsif @participants.include? m.user
       m.reply "You were already in, #{m.user.to_s}!"
     else
       @participants << m.user
@@ -145,8 +145,8 @@ class Drawalong
     end
   end
 
-	def expired?
-		( Time.now.to_i - @last_time ) > (2 * 60 * 60 )
-	end
+  def expired?
+    ( Time.now.to_i - @last_time ) > (2 * 60 * 60 )
+  end
 
 end

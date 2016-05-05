@@ -5,7 +5,7 @@ class Shush
 
   match /s?hush/i, method: :shush
   set :help, "\cB!hush\cB/\cB!shush\cB - Stop all non-essential messages for a while.  Only usable by some users."
-  
+
   def initialize(*args)
     super
 
