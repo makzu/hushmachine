@@ -26,7 +26,7 @@ class SubChecker
     listings.delete_if { |post| @already_checked.include? post["data"]["id"] }
 
     if listings.length > 3
-      Channel("#reddit-mlpds").send "I dunno what's up with Reddit, but I don't want to 'new post' flood any more."
+      Channel("#reddit-mlpds-bots").send "I dunno what's up with Reddit, but I don't want to 'new post' flood any more."
       return
     end
 
