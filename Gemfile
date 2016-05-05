@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'cinch'
+gem 'cinch', '~>2.3'
 gem 'cinch-identify'
 gem 'cinch-basic_ctcp'
 gem 'httparty'
